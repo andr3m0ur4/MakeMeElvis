@@ -1,25 +1,39 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Quero Ser Elvis - Remover Email</title>
-        <link href="style.css" rel="stylesheet" type="text/css"/>
-    </head>
-    <body>
-        <?php
-        $dbc = mysqli_connect('localhost', 'root', '', 'elvis_store')
-                or die('Erro ao se conectar com o servidor MySQL.');
-        
-        $email = $_POST['email'];
-        
-        $query = "DELETE FROM email_list WHERE email = '$email'";
-        
-        mysqli_query($dbc, $query)
-                or die('Erro ao consultar o banco de dados');
-        
-        echo 'Cliente removido: ' . $email;
-        
-        mysqli_close($dbc);
-        ?>
-    </body>
-</html>
+<?php 
+
+    $file = fopen('elvis_store.mme', 'r');
+
+    $list = [];
+
+    while (!feof($file)) {
+        $data = fgets($file);
+
+        $data_detail = explode(';', $data);
+
+        if (count($data_detail) < 3) {
+            continue;
+        }
+
+        $email = str_replace(PHP_EOL, '', $data_detail[3]);
+
+        if (strcmp($email, $_POST['email']) == 0) {
+            continue;
+        }
+
+        $list[] = $data_detail;
+    }
+
+    fclose($file);
+
+    $text = '';
+
+    foreach ($list as $data) {
+        $text .= implode(';', $data);
+    }
+
+    $file = fopen('elvis_store.mme', 'w');
+
+    fwrite($file, $text);
+
+    fclose($file);
+    
+    require 'templates/template-removeemail.php';
