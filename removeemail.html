@@ -1,19 +1,33 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>Quero Ser Elvis - Remover Email</title>
-  <link rel="stylesheet" type="text/css" href="style.css" />
-</head>
-<body>
-  <img src="blankface.jpg" width="161" height="350" alt="Foto" style="float:right" />
-  <img name="elvislogo" src="elvislogo.gif" width="229" height="32" border="0" alt="Make Me Elvis" />
-  <p>Digite um endereço de email para remover.</p>
-  <form method="post" action="removeemail.php">
-    <label for="email">Endereço de email:</label><br />
-    <input id="email" name="email" type="text" size="30" /><br />
-    <input type="submit" name="Remove" value="Remover" />
-  </form>
-</body>
+<!DOCTYPE html>
+<html lang="pt-br">
+	<head>
+		<meta charset="utf-8">
+		<title>Quero Ser Elvis - Remover Email</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+	</head>
+	<body>
+
+		<div class="container mt-5">
+
+			<img id="foto" src="image/blankface.jpg" width="161" height="350" alt="Foto">
+			<img name="elvislogo" src="image/elvislogo.gif" width="229" height="32" border="0" alt="Make Me Elvis" />
+			<p class="mt-3">Digite um endereço de email para remover.</p>
+
+			<div class="col">
+				<form method="post" action="removeemail.php">
+					<div class="form-group row">
+						<label for="email" class="col-md-3 col-form-label">Endereço de email:</label>
+						<div class="col-md-8">
+							<input id="email" name="email" type="text" size="30" class="form-control">
+						</div>
+					</div>
+
+					<button type="submit" class="btn btn-danger">Remover</button>
+				</form>
+			</div>
+
+		</div>
+	</body>
 </html>
