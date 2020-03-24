@@ -1,20 +1,14 @@
 <?php
 
-    require 'Contato.php';
-
-    $contato = new Contato();
-
-    /*foreach ($_POST as $key => $value) {
-        $contato -> __set($key, $value);
-    }*/
-
     $error = false;
 
     try {
+        // abrir arquivo da aplicação
         $file = fopen('elvis_store.mme', 'r');
 
         $last_line = '';
 
+        // pegar o último registro
         while (($line = fgets($file)) != false) {
             $last_line = $line;
         }
@@ -23,6 +17,7 @@
 
         $id = explode(';', $last_line);
 
+        // se não houver registro salvo, define o id como 1, senão incrementa o valor
         if (!$id[0]) {
             $id[0] = 1;
         } else {
@@ -31,6 +26,7 @@
 
         $text = $id[0] . ';' . implode(';', str_replace(';', '-', $_POST)) . PHP_EOL;
         
+        // salva o registro dentro do arquivo
         $file = fopen('elvis_store.mme', 'a');
 
         fwrite($file, $text);

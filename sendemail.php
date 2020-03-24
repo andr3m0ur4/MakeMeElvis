@@ -1,15 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
     <head>
-        <meta charset="UTF-8">
+        <meta charset="utf-8">
         <title>Quero Ser Elvis - Enviar Email</title>
-        <link href="style.css" rel="stylesheet" type="text/css"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="css/style.css">
     </head>
     <body>
-        <img src="blankface.jpg" width="161" height="350" alt="Foto" style="float:right" />
-        <img name="elvislogo" src="elvislogo.gif" width="229" height="32" border="0" alt="Make Me Elvis" />
-        <p><strong>Privado:</strong> Para uso SOMENTE de Elmer<br />
-            Escrever e enviar um email para os membros da lista de email.</p>
+
+        <div class="container mt-5">
+
+            <img id="foto" src="image/blankface.jpg" width="161" height="350" alt="Foto">
+            <img name="elvislogo" src="image/elvislogo.gif" width="229" height="32" border="0" alt="Make Me Elvis">
+            <p>
+                <strong>Privado:</strong> Para uso SOMENTE de Elmer<br />
+                Escrever e enviar um email para os membros da lista de email.
+            </p>
         <?php
         $subject = '';
         $text = '';
@@ -75,5 +82,7 @@
             <?php
         }
         ?>
+
+        </div>
     </body>
 </html>
