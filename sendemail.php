@@ -1,6 +1,6 @@
 <?php
 
-    require './Email.php';
+    require './Class/Email.php';
     require './bibliotecas/PHPMailer/PHPMailer.php';
     require './bibliotecas/PHPMailer/Exception.php';
     require './bibliotecas/PHPMailer/OAuth.php';
@@ -9,7 +9,7 @@
     use PHPMailer\PHPMailer\PHPMailer;
     use PHPMailer\PHPMailer\Exception;
 
-    $file = fopen('elvis_store.mme', 'r');
+    $file = fopen('./file/elvis_store.mme', 'r');
 
     $emails = [];
     $status = 0;
@@ -35,7 +35,7 @@
             $email_obj -> __set($key, $value);
         }
 
-        $file = fopen('elvis_store.mme', 'r');
+        $file = fopen('./file/elvis_store.mme', 'r');
 
         while (!feof($file)) {
             $data = explode(';', fgets($file));

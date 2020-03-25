@@ -1,45 +1,51 @@
 <?php 
 
-    $file = fopen('elvis_store.mme', 'r');
+    if (!empty($_POST)) {
 
-    $list = [];
-    $success = 0;
+        $file = fopen('./file/elvis_store.mme', 'r');
 
-    // percorre o arquivo aberto
-    while (!feof($file)) {
-        $data = fgets($file);
+        $list = [];
+        $success = 0;
 
-        $data_detail = explode(';', $data);
+        // percorre o arquivo aberto
+        while (!feof($file)) {
+            $data = fgets($file);
 
-        // elimina a última linha vazia
-        if (count($data_detail) < 3) {
-            continue;
+            $data_detail = explode(';', $data);
+
+            // elimina a última linha vazia
+            if (count($data_detail) < 3) {
+                continue;
+            }
+
+            $email = str_replace(PHP_EOL, '', $data_detail[3]);
+
+            // elimina email submetido pelo formulário
+            if (strcmp($email, $_POST['email']) == 0) {
+                $success++;
+                continue;
+            }
+
+            $list[] = $data_detail;
         }
 
-        $email = str_replace(PHP_EOL, '', $data_detail[3]);
+        fclose($file);
 
-        // elimina email submetido pelo formulário
-        if (strcmp($email, $_POST['email']) == 0) {
-            $success++;
-            continue;
+        $text = '';
+
+        // salva o array no arquivo da aplicação
+        foreach ($list as $data) {
+            $text .= implode(';', $data);
         }
 
-        $list[] = $data_detail;
+        $file = fopen('./file/elvis_store.mme', 'w');
+
+        fwrite($file, $text);
+
+        fclose($file);
+        
+    } else {
+        header('Location: removeemail.html');
     }
 
-    fclose($file);
-
-    $text = '';
-
-    // salva o array no arquivo da aplicação
-    foreach ($list as $data) {
-        $text .= implode(';', $data);
-    }
-
-    $file = fopen('elvis_store.mme', 'w');
-
-    fwrite($file, $text);
-
-    fclose($file);
-    
     require 'templates/template-removeemail.php';
