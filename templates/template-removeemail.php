@@ -9,10 +9,29 @@
     </head>
     <body>
 
-        <div class="container mt-5">
+        <div class="container my-5">
 
-            <img id="foto" src="image/blankface.jpg" width="161" height="350" alt="Foto">
-            <img name="elvislogo" src="image/elvislogo.gif" width="229" height="32" border="0" alt="Make Me Elvis">
+            <nav class="navbar navbar-expand-sm bg-light navbar-light">
+                <!-- Brand/logo -->
+                <a class="navbar-brand" href="#">
+                    <img src="image/elvislogo.gif" width="229" height="32" border="0" alt="Make Me Elvis">
+                </a>
+              
+                <!-- Links -->
+                <ul class="navbar-nav ml-5">
+                    <li class="nav-item">
+                        <a class="nav-link" href="./addemail.html">Adicionar e-mail</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./removeemail.html">Remover e-mail</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./sendemail.php">Enviar e-mail</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <img id="foto" src="image/blankface.jpg" width="161" height="350" alt="Foto" class="d-none d-sm-inline">
 
         </div>
 
