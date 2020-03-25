@@ -1,88 +1,113 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-    <head>
-        <meta charset="utf-8">
-        <title>Quero Ser Elvis - Enviar Email</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="css/style.css">
-    </head>
-    <body>
+<?php
 
-        <div class="container mt-5">
+    require './Email.php';
+    require './bibliotecas/PHPMailer/PHPMailer.php';
+    require './bibliotecas/PHPMailer/Exception.php';
+    require './bibliotecas/PHPMailer/OAuth.php';
+    require './bibliotecas/PHPMailer/SMTP.php';
 
-            <img id="foto" src="image/blankface.jpg" width="161" height="350" alt="Foto">
-            <img name="elvislogo" src="image/elvislogo.gif" width="229" height="32" border="0" alt="Make Me Elvis">
-            <p>
-                <strong>Privado:</strong> Para uso SOMENTE de Elmer<br />
-                Escrever e enviar um email para os membros da lista de email.
-            </p>
-        <?php
-        $subject = '';
-        $text = '';
-        if (isset($_POST['submit'])) {
-            $from = 'andre.benedicto@etec.sp.gov.br';
-            $subject = $_POST['subject'];
-            $text = $_POST['elvismail'];
-            $output_form = false;
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\Exception;
 
-            if ((empty($subject)) && (empty($text))) {
-                //'Nós sabemos que tanto $subject e $text estão faltando';
-                echo 'Você esqueceu do assunto e do corpo da mensagem.<br>';
-                $output_form = true;
-            }
-            if ((empty($subject)) && (!empty($text))) {
-                //'$subject está vazia';
-                echo 'Você esqueceu do assunto...<br>';
-                $output_form = true;
-            }
-            if ((!empty($subject)) && (empty($text))) {
-                //$text está vazia
-                echo 'Você esqueceu do corpo da mensagem..<br>';
-                $output_form = true;
-            }
-            if ((!empty($subject)) && (!empty($text))) {
-                //Tudo está certo, enviar emails
-                $dbc = mysqli_connect('localhost', 'root', '', 'elvis_store')
-                        or die('Erro ao se conectar com o servidor MySQL.');
+    $file = fopen('elvis_store.mme', 'r');
 
-                $query = "SELECT * FROM email_list";
-                $result = mysqli_query($dbc, $query)
-                        or die('Erro ao consultar o banco de dados.');
+    $emails = [];
+    $status = 0;
 
-                while ($row = mysqli_fetch_array($result)) {
-                    $first_name = $row['first_name'];
-                    $last_name = $row['last_name'];
+    while (!feof($file)) {
+        $data = explode(';', fgets($file));
 
-                    $msg = "Dear $first_name $last_name,\n$text";
-
-                    $to = $row['email'];
-
-                    mail($to, $subject, $msg, 'From:' . $from);
-
-                    echo 'Email enviado para: ' . $to . '<br>';
-                }
-
-                mysqli_close($dbc);
-            }
-        } else {
-            $output_form = true;
+        if (count($data) < 3) {
+            continue;
         }
-        if ($output_form) {
-            ?>
 
-            <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-                <label for="subject">Assunto do email:</label><br>
-                <input id="subject" name="subject" type="text" size="30" value="<?php echo $subject; ?>"/><br>
-                <label for="elvismail">Mensagem do email:</label><br>
-                <textarea id="elvismail" name="elvismail" rows="8" cols="40"><?php echo $text; ?></textarea><br>
-                <input type="submit" name="submit" value="Submeter" />
-            </form>
+        $emails[] = str_replace(PHP_EOL, '', $data[3]);
+    }
 
-            <?php
+    fclose($file);
+
+    if (!empty($_POST)) {
+        $from = 'andre.benedicto@etec.sp.gov.br';
+
+        $email_obj = new Email();
+
+        foreach ($_POST as $key => $value) {
+            $email_obj -> __set($key, $value);
         }
-        ?>
 
-        </div>
-    </body>
-</html>
+        $file = fopen('elvis_store.mme', 'r');
+
+        while (!feof($file)) {
+            $data = explode(';', fgets($file));
+
+            if (count($data) < 3) {
+                continue;
+            }
+
+            if (strcmp(str_replace(PHP_EOL, '', $data[3]), $email_obj -> __get('email')) == 0) {
+                $first_name = $data[1];
+                $last_name = $data[2];
+                $text = $email_obj -> __get('elvismail');
+
+                $msg = "Prezado $first_name $last_name,<br><br>$text";
+
+                $to = $data[3];
+            }
+        }
+        
+        // Tudo está certo, enviar email
+        $mail = new PHPMailer(true);
+
+        try {
+            //Server settings
+            $mail -> SMTPDebug = false;                                 // Enable verbose debug output
+            $mail -> isSMTP();                                      // Set mailer to use SMTP
+            $mail -> Host = 'smtp.gmail.com';  // Specify main and backup SMTP servers
+            $mail -> SMTPAuth = true;                               // Enable SMTP authentication
+            $mail -> Username = 'mouraandre2500@gmail.com';                 // SMTP username
+            $mail -> Password = '$andr3_m0ur4';                           // SMTP password
+            $mail -> SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
+            $mail -> Port = 587;                                    // TCP port to connect to
+            $mail -> CharSet = 'UTF-8';
+            $mail -> Encoding = 'base64';
+
+            //Recipients
+            $mail -> From = $from;
+            $mail -> FromName = 'Make Me Elvis';
+            $mail -> addAddress($to);     // Add a recipient
+            //$mail -> addAddress('ellen@example.com');               // Name is optional
+            //$mail -> addReplyTo('info@example.com', 'Information');
+            //$mail -> addCC('cc@example.com');
+            //$mail -> addBCC('bcc@example.com');
+
+            //Attachments
+            //$mail -> addAttachment('/var/tmp/file.tar.gz');         // Add attachments
+            //$mail -> addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
+
+            //Content
+            $mail -> isHTML(true);                                  // Set email format to HTML
+            $mail -> Subject = $email_obj -> __get('subject');
+            $mail -> Body    = $msg;
+            $mail -> AltBody = 'É necessário utilizar um client que suporte HTML para ter acesso total ao conteúdo dessa mensagem.';
+
+            $mail -> send();
+
+            $email_obj -> status['code_status'] = 1;
+            $email_obj -> status['description_status'] = 'E-mail enviado para: <strong>' . $first_name . ' ' .
+                $last_name . '</strong>';
+
+            $status = $email_obj -> status['code_status'];
+
+        } catch (Exception $e) {
+            $email_obj -> status['code_status'] = 2;
+            $email_obj -> status['description_status'] = 'Não foi possível enviar este e-mail! ' .
+                'Por favor tente novamente mais tarde. Detalhes do erro: ' . $mail -> ErrorInfo;
+
+            $status = $email_obj -> status['code_status'];
+        }
+    }
+
+    $description_status = $email_obj -> status['description_status'] ?? '';
+
+    require './templates/template-sendemail.php';
+        
